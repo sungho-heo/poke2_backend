@@ -2,9 +2,13 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import "dotenv/config";
+import connectDB from "./config/db";
 import auth from "./routes/auth";
 
 const app = express();
+
+// db 연결
+connectDB();
 
 // middleware
 app.use(cors());
