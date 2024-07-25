@@ -6,3 +6,5 @@ const router = Route();
 router.get("/", getFav);
 router.post("/add/", addFav);
 router.delete("/remove/:pokemonName", removeFav);
+
+export default router;
