@@ -18,13 +18,13 @@ export const getFav = async (req: AuthRequest, res: Response) => {
 // 즐겨찾기 포켓몬 추가
 export const addFav = async (req: AuthRequest, res: Response) => {
   const { pokemonName } = req.body;
-  console.log(pokemonName);
 
   try {
     const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
+
     if (!user.fav.includes(pokemonName)) {
       user.fav.push(pokemonName);
       await user.save();

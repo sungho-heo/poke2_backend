@@ -38,7 +38,7 @@ describe("POST /api/auth/signup", () => {
     });
 
     const res = await request(app).post("/api/auth/signup").send({
-      nickname: "test2",
+      nickname: "test",
       email: "test@test.com",
       password: "1234",
     });

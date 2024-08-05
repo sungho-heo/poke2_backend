@@ -8,30 +8,24 @@ let token: string;
 beforeAll(async () => {
   // db 연결
   await mongoose.connect(process.env.MONGO_URI!);
-
-  // 테스트 유저 생성 및 토큰 발급.
-  const res = await request(app).post("/api/auth/signup").send({
-    nickname: "test",
-    email: "test@test.com",
-    password: "123",
-  });
-  token = res.body.token;
-});
-
-// 테스트 끝나면 데이터베이스 연결해제
-afterAll(async () => {
-  await mongoose.connection.close();
 });
 
 beforeEach(async () => {
   // 테스트 전 데이터 초기화
   await User.deleteMany({});
+
   const res = await request(app).post("/api/auth/signup").send({
     nickname: "test",
     email: "test@test.com",
-    password: "123",
+    password: "1234",
   });
-  token = res.body.token;
+
+  token = res.body.token; // 토큰 저장
+});
+
+// 테스트 끝나면 데이터베이스 연결해제
+afterAll(async () => {
+  await mongoose.connection.close();
 });
 
 describe("GET /api/fav", () => {
@@ -45,11 +39,12 @@ describe("GET /api/fav", () => {
 });
 
 describe("POST /api/fav/add", () => {
-  it("should add a net favorite pokemon", async () => {
+  it("should add a new favorite pokemon", async () => {
     const res = await request(app)
       .post("/api/fav/add")
       .set("Authorization", `Bearer ${token}`)
       .send({ pokemonName: "Pikachu" });
+
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("fav");
     expect(res.body.fav).toContain("Pikachu");
@@ -65,6 +60,7 @@ describe("POST /api/fav/add", () => {
       .post("/api/fav/add")
       .set("Authorization", `Bearer ${token}`)
       .send({ pokemonName: "Pikachu" });
+
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("fav");
     expect(res.body.fav).toEqual(["Pikachu"]);
