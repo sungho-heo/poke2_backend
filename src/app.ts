@@ -14,7 +14,6 @@ connectDB();
 // middleware
 app.use(
   cors({
-    origin: "http://localhost:5173", // 허용할 출처
     methods: ["GET", "POST", "PUT", "DELETE"], // 허용할 HTTP 메서드
     credentials: true, // 쿠키를 포함한 인증정보 전송 허용 (필요한 경우)
   })
