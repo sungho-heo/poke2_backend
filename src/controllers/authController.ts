@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
+import { AuthRequest } from "../middleware/authMiddleware";
 
 // signup
 export const signup = async (req: Request, res: Response) => {
@@ -46,6 +47,28 @@ export const login = async (req: Request, res: Response) => {
       expiresIn: "1h",
     });
     res.status(200).json({ token });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Deleteid
+export const deleteid = async (req: AuthRequest, res: Response) => {
+  const { password } = req.body;
+  const userId = req.user?.id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user)
+      return res.status(404).json({ message: "사용자를 찾지 못했습니다." });
+
+    const checkPassword = await bcrypt.compare(password, user.password);
+    if (!checkPassword) {
+      return res.status(400).json({ message: "Invaild password" });
+    }
+
+    await User.findByIdAndDelete(userId);
+    res.status(200).json({ message: "성공적으로 탈퇴되었습니다." });
   } catch (err: any) {
     res.status(500).json({ message: err.message });
   }
